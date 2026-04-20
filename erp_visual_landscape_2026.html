@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP Visual Landscape 2026 — محمود جمعة</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; color: #1E293B; }
+  .page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .header { background: #0A1628; color: #fff; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 17px; font-weight: 600; }
+  .header p { font-size: 11px; color: #C8E6F5; margin-top: 3px; }
+  .header-badge { background: #E8A838; color: #0A1628; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+  .kpi { background: #fff; border-radius: 10px; padding: 12px 14px; text-align: center; border: 1px solid #e2e8f0; }
+  .kpi-n { font-size: 22px; font-weight: 700; }
+  .kpi-l { font-size: 10px; color: #64748B; margin-top: 4px; line-height: 1.4; }
+  .sec-label { font-size: 10px; font-weight: 600; color: #64748B; letter-spacing: .5px; text-transform: uppercase; margin: 1.25rem 0 .6rem; padding-bottom: 5px; border-bottom: 1px solid #e2e8f0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; }
+  .card-ttl { font-size: 11px; font-weight: 600; color: #64748B; margin-bottom: 8px; }
+  .leg-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; font-size: 10px; color: #64748B; align-items: center; }
+  .leg-sq { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex-shrink: 0; }
+  .map-wrap { background: #E8F4FD; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 8px; }
+  .map-leg { display: flex; flex-wrap: wrap; gap: 8px; font-size: 10px; color: #64748B; margin-bottom: 8px; align-items: center; }
+  .map-leg-sq { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .tip { background: #E8F4FD; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 12px; min-height: 44px; margin-bottom: 1rem; line-height: 1.7; }
+  .vtag { font-size: 10px; padding: 2px 7px; border-radius: 3px; background: #E6F1FB; color: #0C447C; display: inline-block; margin: 1px 2px; }
+  .hmap-wrap { margin-bottom: 1.25rem; }
+  .hmap-grid { display: grid; gap: 2px; font-size: 10px; }
+  .hmap-cell { display: flex; align-items: center; justify-content: center; height: 28px; border-radius: 3px; font-size: 8px; font-weight: 500; }
+  .hmap-vendor { display: flex; align-items: center; justify-content: center; height: 28px; font-size: 9.5px; font-weight: 700; color: #1E293B; }
+  .hmap-header { display: flex; align-items: center; justify-content: center; height: 28px; font-size: 9px; font-weight: 700; color: #fff; background: #0A1628; border-radius: 3px; }
+  .hmap-legend { display: flex; gap: 12px; font-size: 10px; color: #64748B; margin-top: 8px; align-items: center; }
+  footer { text-align: center; font-size: 10px; color: #94A3B8; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div>
+      <h1>لوحة معلومات سوق ERP العالمي — 2025 / 2026</h1>
+      <p>خريطة التوزيع الجغرافي · حصص السوق · تغطية القطاعات · التموضع التنافسي</p>
+    </div>
+    <span class="header-badge">محمود جمعة — EMISE</span>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div class="kpi-n" style="color:#185FA5">$65B</div><div class="kpi-l">حجم السوق العالمي 2025</div></div>
+    <div class="kpi"><div class="kpi-n" style="color:#0F6E56">9.8%</div><div class="kpi-l">معدل نمو سنوي CAGR</div></div>
+    <div class="kpi"><div class="kpi-n" style="color:#854F0B">$130B</div><div class="kpi-l">التوقع بحلول 2030</div></div>
+  </div>
+
+  <!-- World Map -->
+  <div class="sec-label">خريطة التمركز العالمي — نضج سوق ERP ووجود الموردين الكبار</div>
+  <div class="map-leg">
+    <span>نضج السوق:</span>
+    <span style="display:flex;align-items:center;gap:3px"><span class="map-leg-sq" style="background:#042C53"></span>ناضج جداً</span>
+    <span style="display:flex;align-items:center;gap:3px"><span class="map-leg-sq" style="background:#185FA5"></span>ناضج</span>
+    <span style="display:flex;align-items:center;gap:3px"><span class="map-leg-sq" style="background:#378ADD"></span>نامٍ</span>
+    <span style="display:flex;align-items:center;gap:3px"><span class="map-leg-sq" style="background:#85B7EB"></span>ناشئ</span>
+    <span style="display:flex;align-items:center;gap:3px"><span class="map-leg-sq" style="background:#E6F1FB;border:1px solid #CBD5E1"></span>محدود</span>
+    <span style="display:flex;align-items:center;gap:3px"><span class="map-leg-sq" style="background:#F5C4B3;border:1px solid #D85A30"></span>MENA</span>
+  </div>
+  <div class="map-wrap" id="map-wrap"></div>
+  <div class="tip" id="map-tip">اضغط على أي دولة لتشوف الموردين الرائدين فيها</div>
+
+  <!-- Pie + Bubble -->
+  <div class="two-col">
+    <div class="card">
+      <div class="card-ttl">حصص سوق ERP العالمي 2025</div>
+      <div class="leg-row" id="dleg"></div>
+      <div style="position:relative;height:200px">
+        <canvas id="dc" role="img" aria-label="مخطط دائري لحصص ERP"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-ttl">تموضع الموردين — حجم العميل vs التكلفة</div>
+      <div style="font-size:9px;color:#64748B;margin-bottom:4px">حجم الفقاعة = الحصة السوقية</div>
+      <div style="position:relative;height:215px">
+        <canvas id="bc" role="img" aria-label="مخطط فقاعي للتموضع التنافسي"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENA Bar -->
+  <div class="sec-label">قوة الوجود في MENA — مقارنة الموردين الرئيسيين</div>
+  <div class="card" style="margin-bottom:1.25rem">
+    <div style="position:relative;height:220px">
+      <canvas id="rc" role="img" aria-label="مخطط أفقي مقارنة MENA"></canvas>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="sec-label">تغطية القطاعات — قوة كل نظام في كل صناعة</div>
+  <div class="card hmap-wrap" id="hmap-container"></div>
+
+  <footer>
+    ERP Landscape 2026 · محمود جمعة — EMISE · المصادر: Panorama Consulting · Gartner · IDC · CITC · تجربة ميدانية
+  </footer>
+</div>
+
+<script>
+// ── World Map ──────────────────────────────────────────
+const CDATA = {
+  840:{m:5,l:['SAP','Oracle','Microsoft','Workday','NetSuite'],n:'أكبر سوق ERP عالمياً — كل الموردين موجودون بقوة'},
+  276:{m:5,l:['SAP (مقر رئيسي)','SAP S/4HANA','Microsoft'],n:'مسقط رأس SAP — أعلى كثافة استخدام ERP في العالم'},
+  826:{m:5,l:['SAP','Oracle','Microsoft','Sage'],n:'سوق ناضج جداً — Sage قوي في المتوسطة'},
+  250:{m:4,l:['SAP','Oracle','Microsoft'],n:'سوق أوروبي قوي، تبني كبير في التصنيع'},
+  392:{m:4,l:['SAP','Oracle','Workday'],n:'سوق ضخم مع حلول محلية قوية'},
+  124:{m:4,l:['SAP','Oracle','Microsoft','NetSuite'],n:'مشابه للسوق الأمريكي — Cloud ERP ينمو'},
+  36:{m:4,l:['SAP','Oracle','Microsoft'],n:'نمو قوي في Cloud ERP خصوصاً Microsoft'},
+  752:{m:4,l:['SAP','Microsoft','IFS Cloud'],n:'IFS قوي هنا — التصنيع والدفاع'},
+  246:{m:4,l:['SAP','Microsoft','IFS Cloud'],n:'IFS مقره هنا — قوي في الصناعات الثقيلة'},
+  356:{m:3,l:['SAP','Oracle','Microsoft','Odoo'],n:'سوق ضخم جداً — Odoo ينمو بسرعة'},
+  682:{m:3,l:['SAP','Oracle','HASIB/GRP','Microsoft'],n:'رؤية 2030 تدفع ERP بقوة — محمود يعمل هنا في بيشة!'},
+  784:{m:3,l:['SAP','Oracle','Microsoft'],n:'الإمارات — مركز إقليمي للحلول السحابية'},
+  818:{m:2,l:['Oracle EBS','SAP','Odoo'],n:'مصر — Oracle EBS منتشر في الحكومة، Odoo للخاص'},
+  634:{m:2,l:['SAP','Oracle','Microsoft'],n:'قطر — مشاريع ضخمة تدفع ERP'},
+  414:{m:2,l:['SAP','Oracle','Microsoft'],n:'كويت — النفط والحكومة يدفعان تبني ERP'},
+  512:{m:2,l:['SAP','Oracle'],n:'عُمان — نمو منتظم مع التنويع الاقتصادي'},
+  48:{m:2,l:['SAP','Oracle','Microsoft'],n:'البحرين — مركز مالي يبني على ERP'},
+  400:{m:2,l:['Oracle EBS','SAP','Odoo'],n:'الأردن — Odoo قوي في الشركات الصغيرة'},
+  792:{m:2,l:['SAP','Microsoft','Logo ERP'],n:'تركيا — سوق محلي مع موردين محليين قوية'},
+  76:{m:3,l:['SAP','Oracle','TOTVS'],n:'البرازيل — أكبر سوق ERP في أمريكا اللاتينية'},
+  710:{m:2,l:['SAP','Microsoft','Sage'],n:'جنوب أفريقيا — SAP مسيطر في المؤسسات'},
+  156:{m:3,l:['SAP','Oracle','محلي'],n:'الصين — ضخم مع حلول محلية'},
+  410:{m:3,l:['SAP','Oracle','محلي'],n:'كوريا الجنوبية — SAP للكبيرة'},
+  458:{m:2,l:['SAP','Oracle','Microsoft'],n:'ماليزيا — سوق ASEAN الأسرع نمواً'},
+  484:{m:2,l:['SAP','Oracle','Microsoft'],n:'المكسيك — نمو قوي في التصنيع'},
+};
+const MC = ['#E6F1FB','#85B7EB','#378ADD','#185FA5','#042C53'];
+const MENA = [682,784,818,634,414,512,48,400,792];
+const nameMap = {840:'الولايات المتحدة',276:'ألمانيا',826:'المملكة المتحدة',250:'فرنسا',392:'اليابان',124:'كندا',36:'أستراليا',752:'السويد',246:'فنلندا',356:'الهند',682:'المملكة العربية السعودية',784:'الإمارات',818:'مصر',634:'قطر',414:'الكويت',512:'عُمان',48:'البحرين',400:'الأردن',792:'تركيا',76:'البرازيل',710:'جنوب أفريقيا',156:'الصين',410:'كوريا الجنوبية',458:'ماليزيا',484:'المكسيك'};
+
+const mw=860,mh=420;
+const svg=d3.select('#map-wrap').append('svg').attr('viewBox',`0 0 ${mw} ${mh}`).attr('width','100%');
+const proj=d3.geoNaturalEarth1().scale(135).translate([mw/2,mh/2+15]);
+const gpath=d3.geoPath(proj);
+
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world=>{
+  const feats=topojson.feature(world,world.objects.countries).features;
+  svg.selectAll('path').data(feats).join('path')
+    .attr('d',gpath)
+    .attr('fill',d=>{const info=CDATA[+d.id];return info?MC[info.m-1]:'#CBD5E1';})
+    .attr('stroke',d=>MENA.includes(+d.id)?'#D85A30':'#fff')
+    .attr('stroke-width',d=>MENA.includes(+d.id)?1.0:0.3)
+    .attr('cursor','pointer')
+    .on('click',(ev,d)=>{
+      const info=CDATA[+d.id];
+      const t=document.getElementById('map-tip');
+      if(info){
+        const stars='★'.repeat(info.m)+'☆'.repeat(5-info.m);
+        t.innerHTML=`<strong style="color:#1E293B">${nameMap[+d.id]||'دولة'}</strong> <span style="color:#BA7517">${stars}</span><br><span style="font-size:11px;color:#64748B">${info.n}</span><br><div style="margin-top:5px">${info.l.map(v=>`<span class="vtag">${v}</span>`).join('')}</div>`;
+      } else {
+        t.innerHTML='<span style="color:#94A3B8">لا توجد بيانات لهذه الدولة</span>';
+      }
+    });
+}).catch(()=>{
+  document.getElementById('map-wrap').innerHTML='<div style="padding:2rem;text-align:center;color:#94A3B8">تعذر تحميل الخريطة</div>';
+});
+
+// ── Doughnut ───────────────────────────────────────────
+const dcolors=['#185FA5','#D85A30','#0C447C','#7F77DD','#0F6E56','#BA7517','#1D9E75','#888780'];
+const dlabels=['SAP 22%','Oracle 14%','Microsoft 13%','Workday 9%','NetSuite 8%','Infor 5%','Odoo 5%','أخرى 24%'];
+const dvals=[22,14,13,9,8,5,5,24];
+const dleg=document.getElementById('dleg');
+dlabels.forEach((l,i)=>{
+  const s=document.createElement('span');
+  s.style.cssText='display:flex;align-items:center;gap:3px';
+  s.innerHTML=`<span style="width:9px;height:9px;border-radius:2px;background:${dcolors[i]};display:inline-block"></span>${l}`;
+  dleg.appendChild(s);
+});
+new Chart(document.getElementById('dc'),{type:'doughnut',data:{labels:dlabels,datasets:[{data:dvals,backgroundColor:dcolors,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}`}}}}});
+
+// ── Bubble ─────────────────────────────────────────────
+const bv=[
+  {l:'SAP',x:4.6,y:5.1,r:18,c:'#185FA5'},{l:'Oracle',x:4.3,y:4.9,r:14,c:'#D85A30'},
+  {l:'Microsoft',x:3.5,y:4.0,r:13,c:'#0C447C'},{l:'Workday',x:4.0,y:4.5,r:9,c:'#7F77DD'},
+  {l:'NetSuite',x:3.1,y:3.4,r:8,c:'#0F6E56'},{l:'Infor',x:3.4,y:3.9,r:5,c:'#BA7517'},
+  {l:'Sage',x:2.5,y:3.0,r:4,c:'#888780'},{l:'Epicor',x:3.0,y:3.2,r:3,c:'#3C3489'},
+  {l:'Odoo',x:1.6,y:1.5,r:5,c:'#1D9E75'},{l:'Zoho',x:1.0,y:1.0,r:3,c:'#639922'},
+  {l:'HASIB',x:2.9,y:4.2,r:4,c:'#D4537E'},
+];
+new Chart(document.getElementById('bc'),{type:'bubble',data:{datasets:bv.map(v=>({label:v.l,data:[{x:v.x,y:v.y,r:Math.max(5,v.r/1.8)}],backgroundColor:v.c+'bb',borderColor:v.c,borderWidth:1}))},options:{responsive:true,maintainAspectRatio:false,scales:{x:{min:0,max:5.8,title:{display:true,text:'حجم الشركة المستهدفة',font:{size:9}},ticks:{font:{size:9},callback:v=>['','ناشئة','SMB','متوسطة','كبيرة','مؤسسات',''][Math.round(v)]||''}},y:{min:0,max:6.2,title:{display:true,text:'مستوى التكلفة',font:{size:9}},ticks:{font:{size:9},callback:v=>['','$','$$','$$$','$$$$','$$$$$',''][Math.round(v)]||''}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}`}}},layout:{padding:15}}});
+
+// ── MENA Bar ───────────────────────────────────────────
+new Chart(document.getElementById('rc'),{type:'bar',data:{labels:['SAP','Oracle / HASIB','Microsoft Dynamics','Odoo','NetSuite','Sage X3'],datasets:[{label:'الخليج العربي',data:[92,88,72,58,28,32],backgroundColor:'#185FA5'},{label:'مصر / شمال أفريقيا',data:[52,82,48,78,18,44],backgroundColor:'#378ADD'},{label:'بلاد الشام',data:[44,68,56,72,22,40],backgroundColor:'#85B7EB'}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,scales:{x:{max:100,ticks:{callback:v=>v+'%',font:{size:10}}},y:{ticks:{font:{size:10}}}},plugins:{legend:{position:'bottom',labels:{font:{size:10},usePointStyle:true,pointStyle:'rect',padding:8}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${Math.round(c.parsed.x)}%`}}}}});
+
+// ── Heatmap ────────────────────────────────────────────
+const vendors=['SAP','Oracle','Microsoft','NetSuite','Odoo','Workday','Sage','Infor','Epicor'];
+const sectors=['تصنيع','خدمات','تجزئة','صحة','إنشاءات','حكومة','مالي'];
+const heat=[[3,3,2,2,2,3,3],[2,3,2,3,2,3,3],[2,3,3,1,2,2,2],[2,3,2,1,1,1,2],[2,2,3,1,2,1,1],[0,3,1,2,0,2,3],[2,2,2,1,1,1,3],[3,2,2,3,2,2,1],[3,1,2,0,2,0,1]];
+const hc=['#E2E8F0','#9FE1CB','#1D9E75','#085041'];
+const ht=['#94A3B8','#27500A','#E1F5EE','#E1F5EE'];
+const hl=['-','محدود','جيد','ممتاز'];
+
+const cols = 1 + sectors.length;
+const container = document.getElementById('hmap-container');
+const grid = document.createElement('div');
+grid.style.cssText=`display:grid;grid-template-columns:80px repeat(${sectors.length},1fr);gap:2px;font-size:10px`;
+
+// header row
+const emptyCell=document.createElement('div');
+emptyCell.style.cssText='height:26px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#64748B;font-weight:600';
+emptyCell.textContent='النظام \\ القطاع';
+grid.appendChild(emptyCell);
+sectors.forEach(s=>{
+  const h=document.createElement('div');
+  h.className='hmap-header';
+  h.textContent=s;
+  grid.appendChild(h);
+});
+
+vendors.forEach((v,i)=>{
+  const vc=document.createElement('div');
+  vc.className='hmap-vendor';
+  vc.style.background=i%2===0?'#E8F4FD':'#fff';
+  vc.style.borderRadius='3px';
+  vc.style.fontSize='9.5px';
+  vc.style.fontWeight='700';
+  vc.style.border='1px solid #e2e8f0';
+  vc.textContent=v;
+  grid.appendChild(vc);
+  heat[i].forEach((val,j)=>{
+    const c=document.createElement('div');
+    c.className='hmap-cell';
+    c.style.background=hc[val];
+    c.style.color=ht[val];
+    c.style.border='1px solid #e2e8f0';
+    c.textContent=hl[val];
+    grid.appendChild(c);
+  });
+});
+container.appendChild(grid);
+
+const legend=document.createElement('div');
+legend.className='hmap-legend';
+legend.innerHTML='<span style="font-size:9px;font-weight:600">مفتاح:</span>'+hc.map((c,i)=>`<span style="display:flex;align-items:center;gap:3px"><span style="width:10px;height:10px;background:${c};border-radius:2px;border:1px solid #e2e8f0;display:inline-block"></span>${hl[i]}</span>`).join('');
+container.appendChild(legend);
+</script>
+</body>
+</html>
