@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Question Mind Maps</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: tab strip, one horizontal mind map (centre at right, RTL), detail panel beneath */
+:root{--bg:#f6f7f9;--surface:#fff;--fg:#1d2433;--muted:#5d6678;--line:#b9c0cd;--ctr:#1d2a4a;--ctrfg:#fff;
+--g:#44506a;--D:#3355c4;--E:#1f7a52;--F:#b36b00;--I:#a8325e;
+--Dbg:#e5ebfb;--Ebg:#dff1e8;--Fbg:#fbeed6;--Ibg:#f7e1ea;--sel:#fff6c7;
+--ff:"IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141d;--surface:#1a2030;--fg:#e6eaf3;--muted:#98a2b8;--line:#3a4358;--ctr:#2c3d6b;--ctrfg:#fff;
+--g:#8d99b5;--D:#8ba2ff;--E:#5fd0a0;--F:#f0b45a;--I:#f08bb0;--Dbg:#222c52;--Ebg:#173a2c;--Fbg:#43331a;--Ibg:#47202f;--sel:#4a4320;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10141d;--surface:#1a2030;--fg:#e6eaf3;--muted:#98a2b8;--line:#3a4358;--ctr:#2c3d6b;--ctrfg:#fff;
+--g:#8d99b5;--D:#8ba2ff;--E:#5fd0a0;--F:#f0b45a;--I:#f08bb0;--Dbg:#222c52;--Ebg:#173a2c;--Fbg:#43331a;--Ibg:#47202f;--sel:#4a4320;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--ff);padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-size:15px;line-height:1.6}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 16px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.sep{width:1px;background:var(--line);margin:4px 6px}
+.tab{font:inherit;font-size:.9rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.tab[aria-selected=true]{background:var(--ctr);color:var(--ctrfg);border-color:var(--ctr)}
+.tab:focus-visible,.leaf:focus-visible{outline:2px solid var(--D);outline-offset:2px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin:10px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
+.mapbox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px}
+svg{display:block;min-width:900px;width:100%;height:auto;font-family:var(--ff)}
+svg{direction:ltr}svg text{unicode-bidi:plaintext}
+.edge{fill:none;stroke:var(--line);stroke-width:1.6}
+.ctr rect{fill:var(--ctr)} .ctr text{fill:var(--ctrfg);font-weight:700;font-size:16px}
+.br rect{fill:var(--surface);stroke:var(--g);stroke-width:1.6} .br text{fill:var(--fg);font-weight:600;font-size:14px}
+.leaf{cursor:pointer} .leaf rect.box{fill:var(--surface);stroke:var(--line);stroke-width:1.2}
+.leaf:hover rect.box,.leaf.on rect.box{stroke:var(--fg)} .leaf.on rect.box{fill:var(--sel)}
+.leaf text.t{fill:var(--fg);font-size:13px} .chip text{font-size:11px;font-weight:700;fill:#fff}
+.chip.D rect{fill:var(--D)}.chip.E rect{fill:var(--E)}.chip.F rect{fill:var(--F)}.chip.I rect{fill:var(--I)}
+:root:not([data-theme]) .chip text{fill:#fff}
+@media (prefers-color-scheme:dark){.chip text{fill:#10141d}}
+:root[data-theme="dark"] .chip text{fill:#10141d}
+:root[data-theme="light"] .chip text{fill:#fff}
+.star{fill:var(--F);font-size:13px}
+.detail{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.detail h2{font-size:1rem;margin:0 0 8px}
+.q{padding:8px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:10px}
+.q:first-of-type{border-top:0}
+.qid{font-weight:700;font-size:.82rem;padding:2px 8px;border-radius:6px;height:fit-content}
+.qid.D{background:var(--Dbg);color:var(--D)}.qid.E{background:var(--Ebg);color:var(--E)}.qid.F{background:var(--Fbg);color:var(--F)}.qid.I{background:var(--Ibg);color:var(--I)}
+.q .en{color:var(--muted);font-size:.86rem;direction:ltr;text-align:left}
+.hint{color:var(--muted)}
+</style>
+<style>:root{color-scheme:light dark}body{margin:0}</style>
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="ar">
+<h1>خرائط ذهنية للأسئلة</h1>
+<p class="sub">محاور النموذج (المقررات، الجداول، القاعات، القاعات الأونلاين) مقابل من نسأل. اضغط على أي عقدة لعرض الأسئلة المرتبطة بها.</p>
+<div class="tabs" id="tabs" role="tablist"></div>
+<div class="legend"><span><i style="background:var(--D)"></i>صاحب القرار D</span><span><i style="background:var(--E)"></i>الموظف E</span><span><i style="background:var(--F)"></i>عضو هيئة التدريس F</span><span><i style="background:var(--I)"></i>تقنية المعلومات I</span><span><b style="color:var(--F)">★</b> سؤال حرج</span></div>
+<div class="mapbox"><svg id="svg" role="img" aria-label="خريطة ذهنية"></svg></div>
+<div class="detail" id="detail"><p class="hint">اضغط على عقدة في الخريطة لعرض أسئلتها.</p></div>
+</div>
+<script>
+const D={"maps": {"overview": {"c": "نموذج المقررات والجداول والقاعات", "b": [{"t": "المقررات والمناهج", "l": [{"t": "اسأل صاحب القرار", "ids": ["D3", "D9"]}, {"t": "اسأل الموظف", "ids": ["E11", "E10", "E5", "E6"]}, {"t": "اسأل تقنية المعلومات", "ids": ["I1"]}]}, {"t": "الجداول", "l": [{"t": "اسأل صاحب القرار", "ids": ["D1", "D2", "D4", "D6", "D5"]}, {"t": "اسأل الموظف", "ids": ["E1", "E2", "E6", "E3", "E7", "E8", "E9"]}, {"t": "اسأل عضو هيئة التدريس", "ids": ["F1", "F5", "F2", "F3", "F6", "F8"]}]}, {"t": "القاعات", "l": [{"t": "اسأل صاحب القرار", "ids": ["D4", "D9", "D8"]}, {"t": "اسأل الموظف", "ids": ["E4"]}, {"t": "اسأل عضو هيئة التدريس", "ids": ["F4"]}, {"t": "اسأل تقنية المعلومات", "ids": ["I1"]}]}, {"t": "القاعات الأونلاين", "l": [{"t": "اسأل صاحب القرار", "ids": ["D9"]}, {"t": "اسأل الموظف", "ids": ["E4"]}, {"t": "اسأل عضو هيئة التدريس", "ids": ["F7"]}, {"t": "اسأل تقنية المعلومات", "ids": ["I7", "I2", "I5"]}]}]}, "courses": {"c": "المقررات والمناهج", "b": [{"t": "إعداد المقرر", "l": [{"t": "الكود والوصف والمتطلبات السابقة والسعة", "ids": ["E11", "D3"]}, {"t": "أين تُحفظ بيانات المقررات ومن المسؤول عنها", "ids": ["I1"]}, {"t": "التقويم الأكاديمي وفترات الذروة", "ids": ["E10"]}]}, {"t": "الإسناد", "l": [{"t": "معايير من يدرّس المقرر وكم شعبة تُفتح", "ids": ["D3"]}, {"t": "حدود الساعات التدريسية لكل مدرّس", "ids": ["D3"]}]}, {"t": "الأعداد والطلبة", "l": [{"t": "الرقم الذي يحدد حجم القاعة ومصدره", "ids": ["E5"]}, {"t": "ربط الطالب بالشعبة (مدخل من Team 1)", "ids": ["E5", "E6", "I1"]}, {"t": "عدد المقررات والشعب في فصل معتاد", "ids": ["E11"]}]}, {"t": "النطاق", "l": [{"t": "ما الذي تغطيه النسخة الأولى وما الذي يؤجل", "ids": ["D9"]}]}]}, "timetables": {"c": "الجداول", "b": [{"t": "بناء الجدول", "l": [{"t": "الخطوات من بداية الفصل حتى النشر والأدوات", "ids": ["E1", "F1"]}, {"t": "أي خطوة تستغرق أطول وقت", "ids": ["E2"]}, {"t": "كيف يُحسم الجدول ومن يعتمده", "ids": ["D1"]}]}, {"t": "القواعد والأولويات", "l": [{"t": "القواعد الإلزامية والمرنة ومن يقرر الاستثناء", "ids": ["D2"]}, {"t": "عند تنافس طلبين على القاعة أو الوقت", "ids": ["D4"]}]}, {"t": "التعارض", "l": [{"t": "التحقق من عدم تعارض مقررات الطالب", "ids": ["E6"]}, {"t": "أكثر الأخطاء حدوثًا وكيف تُكتشف", "ids": ["E3"]}, {"t": "أكثر ثلاث مشاكل تتكرر", "ids": ["D6"]}]}, {"t": "التغيير بعد النشر", "l": [{"t": "من يطلب ومن يوافق وكيف يُبلَّغ", "ids": ["D5"]}, {"t": "طلب محاضرة إضافية أو تعويضية", "ids": ["E7", "F5"]}, {"t": "إبلاغ الطلبة والمدرّسين بالتغيير", "ids": ["E8", "F2"]}]}, {"t": "التفضيلات والحالات الخاصة", "l": [{"t": "إبلاغ القسم بالأوقات المناسبة", "ids": ["F3"]}, {"t": "الحالات التي لا تناسب الإجراء المعتاد", "ids": ["E9"]}, {"t": "أدوات المدرّس وما ينقصها", "ids": ["F6", "F8"]}]}]}, "rooms": {"c": "القاعات", "b": [{"t": "بيانات القاعة", "l": [{"t": "السعة والموقع والتجهيزات وأوقات الإتاحة ومن يعدّلها", "ids": ["E4"]}, {"t": "أين تُحفظ بيانات القاعات", "ids": ["I1"]}]}, {"t": "الحجز والتخصيص", "l": [{"t": "ما الذي يمنع تخصيص قاعة لمحاضرة", "ids": ["E4"]}, {"t": "مشاكل المدرّسين مع القاعات", "ids": ["F4"]}, {"t": "أولوية المحاضرات على الامتحانات والفعاليات", "ids": ["D4"]}]}, {"t": "مع الفرق الأخرى", "l": [{"t": "تقاسم القاعات مع الامتحانات (Team 4)", "ids": ["D4", "D9"]}]}, {"t": "التقارير", "l": [{"t": "تقارير الإشغال وكم مرة ولمن", "ids": ["D8"]}]}]}, "online": {"c": "القاعات الأونلاين", "b": [{"t": "المنصة والسعة", "l": [{"t": "المنصة المستخدمة وعدد الجلسات المتزامنة وحد المشاركين", "ids": ["I7"]}]}, {"t": "القاعة الهجينة", "l": [{"t": "طلاب يحضرون أونلاين وما يلزم في القاعة", "ids": ["F7"]}]}, {"t": "المكان كوعاء بخصائص", "l": [{"t": "أنواع الأماكن وخصائص كل نوع (قاعة، معمل، أونلاين)", "ids": ["E4"]}]}, {"t": "التكامل والإشعارات", "l": [{"t": "طرق التصدير والربط مع المنصة", "ids": ["I2"]}, {"t": "قنوات الإشعار المتاحة", "ids": ["I5"]}]}, {"t": "القرار", "l": [{"t": "هل هي ضمن النسخة الأولى", "ids": ["D9"]}]}]}, "roleD": {"c": "صاحب القرار", "b": [{"t": "المقررات والإسناد", "l": [{"t": "", "ids": ["D3"]}]}, {"t": "الجداول والقواعد", "l": [{"t": "", "ids": ["D1"]}, {"t": "", "ids": ["D2"]}, {"t": "", "ids": ["D6"]}]}, {"t": "الأولويات والتغيير", "l": [{"t": "", "ids": ["D4"]}, {"t": "", "ids": ["D5"]}]}, {"t": "القاعات والتقارير", "l": [{"t": "", "ids": ["D8"]}]}, {"t": "الصلاحيات والنطاق", "l": [{"t": "", "ids": ["D7"]}, {"t": "", "ids": ["D9"]}]}, {"t": "ختام", "l": [{"t": "", "ids": ["D10"]}, {"t": "", "ids": ["D11"]}]}]}, "roleE": {"c": "الموظف", "b": [{"t": "بناء الجدول", "l": [{"t": "", "ids": ["E1"]}, {"t": "", "ids": ["E2"]}, {"t": "", "ids": ["E3"]}, {"t": "", "ids": ["E9"]}]}, {"t": "التعارض", "l": [{"t": "", "ids": ["E6"]}]}, {"t": "المقررات والأعداد", "l": [{"t": "", "ids": ["E5"]}, {"t": "", "ids": ["E10"]}, {"t": "", "ids": ["E11"]}]}, {"t": "القاعات والأماكن", "l": [{"t": "", "ids": ["E4"]}]}, {"t": "التغيير والإبلاغ", "l": [{"t": "", "ids": ["E7"]}, {"t": "", "ids": ["E8"]}]}, {"t": "ختام", "l": [{"t": "", "ids": ["E12"]}, {"t": "", "ids": ["E13"]}]}]}, "roleF": {"c": "عضو هيئة التدريس", "b": [{"t": "معرفة الجدول والتغيير", "l": [{"t": "", "ids": ["F1"]}, {"t": "", "ids": ["F2"]}]}, {"t": "التفضيلات", "l": [{"t": "", "ids": ["F3"]}, {"t": "", "ids": ["F8"]}]}, {"t": "القاعات والأونلاين", "l": [{"t": "", "ids": ["F4"]}, {"t": "", "ids": ["F7"]}]}, {"t": "الطلبات", "l": [{"t": "", "ids": ["F5"]}]}, {"t": "الأدوات", "l": [{"t": "", "ids": ["F6"]}]}, {"t": "ختام", "l": [{"t": "", "ids": ["F9"]}, {"t": "", "ids": ["F10"]}]}]}, "roleI": {"c": "تقنية المعلومات", "b": [{"t": "البيانات والتكامل", "l": [{"t": "", "ids": ["I1"]}, {"t": "", "ids": ["I2"]}]}, {"t": "الدخول والأمان", "l": [{"t": "", "ids": ["I3"]}, {"t": "", "ids": ["I4"]}]}, {"t": "الإشعارات", "l": [{"t": "", "ids": ["I5"]}]}, {"t": "الاستضافة والسياسات", "l": [{"t": "", "ids": ["I6"]}]}, {"t": "الأونلاين", "l": [{"t": "", "ids": ["I7"]}]}, {"t": "ختام", "l": [{"t": "", "ids": ["I8"]}, {"t": "", "ids": ["I9"]}]}]}}, "Q": {"D1": {"s": "★", "ar": "كيف يُحسم الجدول كل فصل من أول خطوة حتى الاعتماد؟", "en": "How is the timetable decided each semester, from the first step to approval?"}, "D2": {"s": "★", "ar": "ما القواعد التي يجب أن يلتزم بها كل جدول؟", "en": "Which rules must every timetable respect?"}, "D3": {"s": "", "ar": "ما المعايير التي تحدد من يدرّس المقرر وكم شعبة تُفتح؟", "en": "Which criteria decide who teaches a course and how many sections open?"}, "D4": {"s": "★", "ar": "عندما يتقدم عضوان من هيئة التدريس (أو جهتان) بطلبي حجز للقاعة نفسها أو الوقت نفسه، كيف يُحسم الأمر؟", "en": "When two instructors (or two units) request the same room or time, how is it decided?"}, "D5": {"s": "★", "ar": "كيف يُعالج التغيير بعد نشر الجدول؟", "en": "How is a change handled after the timetable is published?"}, "D6": {"s": "★", "ar": "ما أكثر ثلاث مشاكل تتكرر؟ اذكر مثالًا لكل منها.", "en": "What are the three problems that come back most often? Please give an example of each."}, "D7": {"s": "★", "ar": "من يجب أن يعرض ويقترح ويعدّل ويعتمد تغييرات الجدول؟", "en": "Who should be able to view, propose, edit and approve timetable changes?"}, "D8": {"s": "", "ar": "ما التقارير التي تستخدمها أو تحتاجها، وكم مرة؟", "en": "Which reports do you use or need, and how often?"}, "D9": {"s": "★", "ar": "ما الذي يجب أن تغطيه النسخة الأولى وما الذي يمكن تأجيله؟", "en": "What must the first version cover, and what can wait?"}, "D10": {"s": "✓", "ar": "هل هناك ما يجب أن نعرفه أيضًا؟", "en": "Is there anything else we should know?"}, "D11": {"s": "✓", "ar": "من تنصحنا بسؤاله أيضًا؟", "en": "Who else should we ask?"}, "E1": {"s": "★", "ar": "اشرح لي خطوات بناء الجدول من بداية الفصل حتى النشر.", "en": "Walk me through building a timetable from the start of the semester to publishing."}, "E2": {"s": "★", "ar": "ما الخطوة التي تستغرق أطول وقت، وكم تقريبًا؟", "en": "Which step takes the most time, and roughly how long?"}, "E3": {"s": "★", "ar": "ما الأخطاء الأكثر حدوثًا؟", "en": "What mistakes happen most often?"}, "E4": {"s": "★", "ar": "ما المعلومات المحفوظة عن كل قاعة أو مكان تدريس (قاعة، معمل، أونلاين)، ومن يستطيع تعديلها؟", "en": "What information is kept about each room or teaching space (rooms, labs, online), and who can edit it?"}, "E5": {"s": "★", "ar": "كيف تعرف عدد الطلبة في كل شعبة، ومتى؟", "en": "How do you know how many students will attend each section, and when do you know it?"}, "E6": {"s": "★", "ar": "كيف تتأكد أن مقررات الطالب الواحد لا تتعارض؟", "en": "How do you check that the courses of one student do not clash?"}, "E7": {"s": "★", "ar": "كيف تُستقبل وتُعتمد طلبات تغيير القاعة أو المحاضرة الإضافية أو التعويضية؟", "en": "How are requests for a different room, an extra lecture or a make-up lecture received and approved?"}, "E8": {"s": "★", "ar": "كيف يُبلَّغ الطلبة والمدرّسون بالتغيير؟", "en": "How are students and instructors told about a change?"}, "E9": {"s": "", "ar": "ما الحالات التي لا تناسب الإجراء المعتاد؟", "en": "Which cases do not fit the normal process?"}, "E10": {"s": "", "ar": "في أي فترة من الفصل يزيد ضغط إعداد الجداول أو تعديلها، ولماذا؟", "en": "In which part of the semester is the pressure highest to prepare or change timetables, and why?"}, "E11": {"s": "", "ar": "كم عدد المقررات والشعب والقاعات والمدرسين في فصل معتاد؟", "en": "How many courses, sections, rooms and instructors do you handle in a typical semester?"}, "E12": {"s": "✓", "ar": "هل هناك ما يجب أن نعرفه أيضًا؟", "en": "Is there anything else we should know?"}, "E13": {"s": "✓", "ar": "من تنصحنا بسؤاله أيضًا؟", "en": "Who else should we ask?"}, "F1": {"s": "★", "ar": "كيف تعرف جدولك كل فصل؟", "en": "How do you find out your timetable each semester?"}, "F2": {"s": "★", "ar": "احكِ لي عن آخر مرة تغيّرت فيها إحدى محاضراتك: متى عرفت، وهل كان الوقت مناسبًا؟", "en": "Tell me about the last time one of your lectures was changed: when did you hear, and was it in time?"}, "F3": {"s": "★", "ar": "كيف تبلّغ القسم بالأيام أو الأوقات المناسبة لك؟", "en": "How do you tell the department which days or times suit you?"}, "F4": {"s": "★", "ar": "ما المشاكل التي واجهتك مع القاعات؟", "en": "What problems have you had with rooms?"}, "F5": {"s": "★", "ar": "ماذا تفعل عندما تحتاج قاعة مختلفة أو محاضرة إضافية أو تعويضية؟", "en": "What do you do when you need a different room, an extra lecture or a make-up lecture?"}, "F6": {"s": "★", "ar": "ما الأدوات التي تستخدمها حاليًا لجدولك التدريسي، وما الذي لا تستطيع فعله؟", "en": "Which tools do you use today for your teaching schedule, and what can they not do?"}, "F7": {"s": "", "ar": "هل في محاضراتك طلاب يحضرون أونلاين؟ وماذا تحتاج في القاعة لذلك؟", "en": "Do any of your lectures include students attending online? What do you need in the room for them?"}, "F8": {"s": "", "ar": "ما الذي سيسهّل عليك التعامل مع الجدول؟", "en": "What would make your scheduling work easier?"}, "F9": {"s": "✓", "ar": "هل هناك ما يجب أن نعرفه أيضًا؟", "en": "Is there anything else we should know?"}, "F10": {"s": "✓", "ar": "من تنصحنا بسؤاله أيضًا؟", "en": "Who else should we ask?"}, "I1": {"s": "★", "ar": "ما الأنظمة التي تخزّن بيانات القاعات والمقررات والمدرسين؟", "en": "Which systems store data about rooms, courses and instructors?"}, "I2": {"s": "★", "ar": "ما الطرق المتاحة حاليًا لتصدير البيانات أو الربط بهذه الأنظمة؟", "en": "What ways exist today to export data or connect to these systems?"}, "I3": {"s": "★", "ar": "كيف يسجّل المستخدمون الدخول إلى أنظمة الجامعة حاليًا، وما الأدوار المطبقة؟", "en": "How do users sign in to university systems today, and which roles apply?"}, "I4": {"s": "★", "ar": "ما متطلبات الأمان والخصوصية المطبقة على أي نظام جديد؟", "en": "Which security and privacy requirements apply to a new system?"}, "I5": {"s": "★", "ar": "ما القنوات التي يمكن لنظام جديد استخدامها لإشعار المستخدمين (بريد، رسائل، تطبيق)؟", "en": "Which channels can a new system use to notify users (email, SMS, app)?"}, "I6": {"s": "", "ar": "ما متطلبات الاستضافة والسياسات المطبقة (التوفر، النسخ الاحتياطي، مدة حفظ البيانات)؟", "en": "Which hosting and policy requirements apply (availability, backup, data retention)?"}, "I7": {"s": "", "ar": "ما المنصة المستخدمة للمحاضرات الأونلاين إن وجدت، وكم جلسة يمكن أن تعمل في وقت واحد؟", "en": "Which platform is used for online lectures, if any, and how many sessions can run at once?"}, "I8": {"s": "✓", "ar": "هل هناك ما يجب أن نعرفه أيضًا؟", "en": "Is there anything else we should know?"}, "I9": {"s": "✓", "ar": "من تنصحنا بسؤاله أيضًا؟", "en": "Who else should we ask?"}}, "tabs": [["overview", "نظرة عامة", "g"], ["courses", "المقررات", "g"], ["timetables", "الجداول", "g"], ["rooms", "القاعات", "g"], ["online", "الأونلاين", "g"], ["roleD", "صاحب القرار", "D"], ["roleE", "الموظف", "E"], ["roleF", "عضو هيئة التدريس", "F"], ["roleI", "تقنية المعلومات", "I"]]};
+const NS='http://www.w3.org/2000/svg',svg=document.getElementById('svg'),det=document.getElementById('detail');
+const CW=200,BW=210,LW=520,LH=48,GAP=8,GG=18,PAD=16;
+function el(n,a,p){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function wrap(s,n){const w=s.split(' '),L=[];let c='';for(const x of w){if((c+' '+x).trim().length>n&&c){L.push(c);c=x}else c=(c+' '+x).trim()}if(c)L.push(c);return L.slice(0,2)}
+function curve(x1,y1,x2,y2,p){const m=(x1+x2)/2;el('path',{class:'edge',d:`M${x1} ${y1}C${m} ${y1} ${m} ${y2} ${x2} ${y2}`},p)}
+function render(key){
+  const M=D.maps[key];svg.innerHTML='';
+  const W=PAD*2+CW+BW+LW+120, xC=W-PAD-CW, xB=xC-60-BW, xL=PAD;
+  let y=PAD;const groups=[];
+  M.b.forEach(b=>{const y0=y;const ls=b.l.map(l=>{const o={l,y};y+=LH+GAP;return o});y-=GAP;groups.push({b,ls,y0,y1:y});y+=GG});
+  const H=y-GG+PAD;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const cy=H/2, g=el('g',{},svg);
+  const ctr=el('g',{class:'ctr'},svg);
+  groups.forEach(G=>{
+    const by=(G.y0+G.y1)/2;
+    curve(xC,cy,xB+BW,by,g);
+    G.ls.forEach(o=>curve(xB,by,xL+LW,o.y+LH/2,g));
+  });
+  groups.forEach(G=>{
+    const by=(G.y0+G.y1)/2,b=el('g',{class:'br'},svg);
+    el('rect',{x:xB,y:by-20,width:BW,height:40,rx:20},b);
+    el('text',{x:xB+BW/2,y:by+5,'text-anchor':'middle'},b).textContent=G.b.t;
+    G.ls.forEach(o=>{
+      const ids=o.l.ids,r=ids[0][0];
+      const lf=el('g',{class:'leaf',tabindex:0,role:'button'},svg);
+      el('rect',{class:'box',x:xL,y:o.y,width:LW,height:LH,rx:8},lf);
+      let label=o.l.t, star='';
+      if(!label&&ids.length===1){label=D.Q[ids[0]].ar; if(D.Q[ids[0]].s==='★')star='★'}
+      const lines=wrap(label,58);
+      lines.forEach((t,i)=>{const yy=o.y+(lines.length===1?LH/2+5:19+i*17);
+        const tx=el('text',{class:'t',x:xL+LW-12-(star?16:0),y:yy,'text-anchor':'end'},lf);tx.textContent=t});
+      if(star)el('text',{class:'star',x:xL+LW-12,y:o.y+LH/2+5,'text-anchor':'end'},lf).textContent='★';
+      ids.slice(0,4).forEach((id,i)=>{const c=el('g',{class:'chip '+id[0]},lf);
+        el('rect',{x:xL+10+i*40,y:o.y+LH/2-10,width:36,height:20,rx:5},c);
+        el('text',{x:xL+28+i*40,y:o.y+LH/2+4,'text-anchor':'middle'},c).textContent=id});
+      const open=()=>{svg.querySelectorAll('.leaf.on').forEach(n=>n.classList.remove('on'));lf.classList.add('on');show(ids,G.b.t,label)};
+      lf.addEventListener('click',open);lf.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+    });
+  });
+  el('rect',{x:xC,y:cy-34,width:CW,height:68,rx:14},ctr);
+  const cl=wrap(M.c,22);cl.forEach((t,i)=>el('text',{x:xC+CW/2,y:cy+5+(i-(cl.length-1)/2)*20,'text-anchor':'middle'},ctr).textContent=t);
+}
+function show(ids,branch,label){
+  det.innerHTML='';const h=document.createElement('h2');h.textContent=branch+(label&&ids.length>1?' — '+label:'');det.appendChild(h);
+  ids.forEach(id=>{const q=D.Q[id],d=document.createElement('div');d.className='q';
+    d.innerHTML=`<span class="qid ${id[0]}"></span><div><div class="ar"></div><div class="en"></div></div>`;
+    d.querySelector('.qid').textContent=id+(q.s?' '+q.s:'');d.querySelector('.ar').textContent=q.ar;d.querySelector('.en').textContent=q.en;det.appendChild(d)});
+}
+const tb=document.getElementById('tabs');
+D.tabs.forEach(([k,t],i)=>{if(k==='roleD'){const s=document.createElement('span');s.className='sep';tb.appendChild(s)}
+  const b=document.createElement('button');b.className='tab';b.textContent=t;b.setAttribute('role','tab');b.setAttribute('aria-selected',i===0);
+  b.onclick=()=>{tb.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));render(k);det.innerHTML='<p class="hint">اضغط على عقدة في الخريطة لعرض أسئلتها.</p>'};tb.appendChild(b)});
+render('overview');
+</script>
+
+</body>
+</html>
