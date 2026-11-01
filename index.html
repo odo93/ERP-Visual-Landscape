@@ -50,6 +50,26 @@ svg{direction:ltr}svg text{unicode-bidi:plaintext}
 .qid.M1{background:var(--M1bg);color:var(--M1)}.qid.M2{background:var(--M2bg);color:var(--M2)}.qid.M3{background:var(--M3bg);color:var(--M3)}.qid.M4{background:var(--M4bg);color:var(--M4)}
 .ctr text.cnt{font-weight:500;font-size:13px}
 .hint{color:var(--muted)}
+.cm{grid-column:1/-1;margin-top:6px}
+.cm-list{display:grid;gap:6px;margin-bottom:6px}
+.cmt{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.9rem}
+.cmt .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:.78rem;margin-bottom:2px}
+.tb{font-weight:700;padding:1px 8px;border-radius:6px;font-size:.76rem;color:var(--fg);background:var(--line)}
+.tb.t1{background:var(--M1bg);color:var(--M1)}.tb.t2{background:var(--M2bg);color:var(--M2)}.tb.t3{background:var(--M3bg);color:var(--M3)}.tb.t4{background:var(--M4bg);color:var(--M4)}
+.cmt .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.lnk{font:inherit;font-size:.78rem;background:none;border:0;color:var(--muted);cursor:pointer;text-decoration:underline;padding:0}
+.addbtn{font:inherit;font-size:.82rem;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.form{display:none;gap:8px;margin-top:6px}.form.open{display:grid}
+.form select,.form textarea{font:inherit;font-size:.9rem;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);width:100%;box-sizing:border-box}
+.form textarea{min-height:64px;resize:vertical}
+.form .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.send{font:inherit;padding:6px 16px;border-radius:8px;border:0;background:var(--ctr);color:var(--ctrfg);cursor:pointer}
+.err{color:var(--M4);font-size:.82rem}
+.note{color:var(--muted);font-size:.85rem;margin:8px 0}
+#allcm{display:none}#allcm.on{display:block}
+.filter{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.filter select{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.qref{font-weight:700;font-size:.82rem}
 </style>
 <style>:root{color-scheme:light dark}body{margin:0}</style>
 </head>
@@ -60,6 +80,7 @@ svg{direction:ltr}svg text{unicode-bidi:plaintext}
 <div class="tabs" id="tabs" role="tablist"></div>
 <div class="legend" id="legend"></div>
 <div class="mapbox"><svg id="svg" role="img" aria-label="خريطة ذهنية"></svg></div>
+<div class="detail" id="allcm"></div>
 <div class="detail" id="detail"><p class="hint">اضغط على عقدة في الخريطة لعرض أسئلتها.</p></div>
 </div>
 <script>
@@ -99,17 +120,97 @@ function render(key){
 }
 function show(l,branch){
   det.innerHTML='';const h=document.createElement('h2');h.textContent=branch+' — '+l.t;det.appendChild(h);
+  if(!DB){const n=document.createElement('p');n.className='note';n.textContent='التعليقات تعمل عند فتح الصفحة من Claude بعد تسجيل الدخول.';det.appendChild(n)}
   l.qs.forEach(q=>{const d=document.createElement('div');d.className='q';
     d.innerHTML=`<span class="qid M${l.m}"></span><div class="ar"></div>`;
-    d.querySelector('.qid').textContent=q.i;d.querySelector('.ar').textContent=q.t;det.appendChild(d)});
+    d.querySelector('.qid').textContent=q.i;d.querySelector('.ar').textContent=q.t;
+    if(DB)d.appendChild(commentBox(q.i));
+    det.appendChild(d)});
+}
+/* ---- comments (shared db) ---- */
+const TEAMS=['Team 1','Team 2','Team 3','Team 4','فريق آخر'];
+let DB=null,USERC=null,ME=null,CM=[],NAMES={};
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+function tcls(t){const m=/Team (\d)/.exec(t||'');return m?'t'+m[1]:''}
+function fmt(ts){try{return new Date(ts).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'})}catch(e){return ''}}
+function cmtEl(c,showQ){
+  const d=document.createElement('div');d.className='cmt';
+  const m=document.createElement('div');m.className='meta';
+  const tb=document.createElement('span');tb.className='tb '+tcls(c.team);tb.textContent=c.team||'—';m.appendChild(tb);
+  if(showQ){const q=document.createElement('span');q.className='qref';q.textContent=c.qid;m.appendChild(q)}
+  const w=document.createElement('span');w.textContent=(NAMES[c.uid]||'زميل')+' · '+fmt(c.ts);m.appendChild(w);
+  if(ME&&c.uid===ME){const x=document.createElement('button');x.className='lnk';x.textContent='حذف';x.onclick=()=>DB.collection('comments').doc(c.id).delete().catch(()=>{});m.appendChild(x)}
+  const t=document.createElement('div');t.className='txt';t.textContent=c.text;
+  d.append(m,t);return d;
+}
+function fillList(box,qid){
+  const list=box.querySelector('.cm-list');list.innerHTML='';
+  const mine=CM.filter(c=>c.qid===qid);
+  mine.forEach(c=>list.appendChild(cmtEl(c,false)));
+  box.querySelector('.addbtn').textContent=mine.length?`تعليقات (${mine.length}) — أضف تعليقًا`:'أضف تعليقًا';
+}
+function commentBox(qid){
+  const box=document.createElement('div');box.className='cm';box.dataset.q=qid;
+  box.innerHTML='<div class="cm-list"></div><button class="addbtn" type="button"></button><div class="form"><div class="row"><label>الفريق</label><select></select></div><textarea placeholder="اكتب ملاحظتك على هذا السؤال"></textarea><div class="row"><button class="send" type="button">إرسال</button><span class="err" role="alert"></span></div></div>';
+  const sel=box.querySelector('select'),form=box.querySelector('.form'),ta=box.querySelector('textarea'),err=box.querySelector('.err');
+  const o0=document.createElement('option');o0.value='';o0.textContent='اختر فريقك';sel.appendChild(o0);
+  TEAMS.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o)});
+  sel.value=ls.get('team')||'';
+  box.querySelector('.addbtn').onclick=()=>{form.classList.toggle('open');if(form.classList.contains('open'))ta.focus()};
+  box.querySelector('.send').onclick=async()=>{
+    err.textContent='';const text=ta.value.trim();
+    if(!sel.value){err.textContent='اختر الفريق أولًا';return}
+    if(!text){err.textContent='اكتب التعليق أولًا';return}
+    ls.set('team',sel.value);
+    try{await DB.collection('comments').add({qid,team:sel.value,text,uid:ME,ts:Date.now()});ta.value='';form.classList.remove('open')}
+    catch(e){err.textContent='تعذر الحفظ. تحتاج صلاحية مساهم (Contributor) على الصفحة.'}
+  };
+  fillList(box,qid);return box;
+}
+function allIndex(){const m={};Object.values(D.maps).forEach(M=>M.b.forEach(b=>b.l.forEach(l=>l.qs.forEach(q=>m[q.i]=q.t))));return m}
+function renderAll(){
+  const p=document.getElementById('allcm');if(!p.classList.contains('on'))return;
+  const cur=(p.querySelector('select')||{}).value||'';p.innerHTML='';
+  const h=document.createElement('h2');h.textContent='تعليقات الفرق ('+CM.length+')';p.appendChild(h);
+  const f=document.createElement('div');f.className='filter';f.innerHTML='<label>الفريق</label><select><option value="">الكل</option></select>';
+  const s=f.querySelector('select');TEAMS.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;s.appendChild(o)});s.value=cur;
+  s.onchange=renderAll;p.appendChild(f);
+  const idx=allIndex(),rows=CM.filter(c=>!s.value||c.team===s.value).slice().reverse();
+  if(!rows.length){const n=document.createElement('p');n.className='note';n.textContent='لا توجد تعليقات بعد.';p.appendChild(n)}
+  rows.forEach(c=>{const w=document.createElement('div');w.className='cm-list';const e=cmtEl(c,true);
+    const q=document.createElement('div');q.className='note';q.textContent=(idx[c.qid]||'').slice(0,140);e.insertBefore(q,e.lastChild);w.appendChild(e);p.appendChild(w)});
+}
+async function initComments(){
+  try{
+    if(!window.claude||!window.claude.use)return;
+    DB=await window.claude.use('db');USERC=await window.claude.use('user');
+    if(!DB){return}
+    try{ME=await USERC.id()}catch(e){}
+    const tm=setTimeout(()=>{},10000);
+    DB.collection('comments').orderBy('ts','asc').limit(1000).onSnapshot(async snap=>{
+      clearTimeout(tm);
+      CM=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+      try{const ids=[...new Set(CM.map(c=>c.uid).filter(Boolean))];if(ids.length&&USERC.profiles){const ps=await USERC.profiles(ids);ids.forEach(i=>NAMES[i]=(ps[i]&&ps[i].name)||'')}}catch(e){}
+      document.querySelectorAll('.cm').forEach(b=>fillList(b,b.dataset.q));renderAll();
+    },()=>{});
+    const hint=det.querySelector('.hint');
+    addCommentsTab();
+  }catch(e){DB=null}
+}
+function addCommentsTab(){
+  const b=document.createElement('button');b.className='tab';b.textContent='تعليقات الفرق';b.setAttribute('role','tab');b.setAttribute('aria-selected','false');
+  b.onclick=()=>{tb.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));
+    document.querySelector('.mapbox').style.display='none';det.style.display='none';document.getElementById('allcm').classList.add('on');renderAll()};
+  const s=document.createElement('span');s.className='sep';tb.appendChild(s);tb.appendChild(b);
 }
 const lg=document.getElementById('legend');
 [1,2,3,4].forEach(m=>{const s=document.createElement('span');s.innerHTML=`<i style="background:var(--M${m})"></i>`;s.append(D.team[m]+': '+D.mod[m]);lg.appendChild(s)});
 const tb=document.getElementById('tabs');
 D.tabs.forEach(([k,t,kind],i)=>{if(i>0&&kind!==D.tabs[i-1][2]&&kind!=='g'){const s=document.createElement('span');s.className='sep';tb.appendChild(s)}
   const b=document.createElement('button');b.className='tab';b.textContent=t;b.setAttribute('role','tab');b.setAttribute('aria-selected',i===0);
-  b.onclick=()=>{tb.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));render(k);det.innerHTML=HINT};tb.appendChild(b)});
+  b.onclick=()=>{tb.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelector('.mapbox').style.display='';det.style.display='';document.getElementById('allcm').classList.remove('on');render(k);det.innerHTML=HINT};tb.appendChild(b)});
 render('ov');
+initComments();
 </script>
 
 </body>
